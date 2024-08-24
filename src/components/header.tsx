@@ -1,14 +1,13 @@
 import { MessageCircleIcon } from 'lucide-react';
-import { useCurrentLesson } from '../store/slices/player';
-import { useAppSelector } from '../store';
+import { useCurrentLesson, useStore } from '../zustand-store';
 
 export function Header() {
-  const { currentModule, currentLesson } = useCurrentLesson()
-  const isCourseLoading = useAppSelector(state => state.player.isLoading)
-  
+  const { currentLesson, currentModule } = useCurrentLesson()
+  const isLoading = useStore(store => store.isLoading)
+
   return (
     <div className="flex items-center justify-between">
-      { isCourseLoading ? (
+      { isLoading ? (
         <div className="flex flex-col gap-2">
           <div className="w-24 h-6 bg-gradient-to-tr from-zinc-500 to-zinc-700 animate-pulse rounded" />
           <div className="w-32 h-4 bg-gradient-to-tr from-zinc-600 to-zinc-800 animate-pulse rounded" />

@@ -1,26 +1,22 @@
 import { Header } from '../components/header'
 import { Video } from '../components/video'
 import { Module } from '../components/module'
-import { useAppDispatch, useAppSelector } from '../store'
-import { loadCourse, useCurrentLesson } from '../store/slices/player'
 import { Fragment, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useCurrentLesson, useStore } from '../zustand-store'
 
 export function Player() {  
-  const dispatch = useAppDispatch()
+  const { course, load, isLoading } = useStore()
 
-  /* Importante: Não retornar todo o state, mas apenas as informações necessárias */
-  const modules = useAppSelector(state => state.player.course?.modules)
-  const isCourseLoading = useAppSelector(state => state.player.isLoading)
   const { currentLesson } = useCurrentLesson()
 
   useEffect(() => {
-    dispatch(loadCourse())
-  }, [])
-  
+    load()
+  }, [load])
+
   useEffect(() => {
     if (currentLesson) {
-      document.title = `Assistindo: ${currentLesson.title}`
+      document.title = `Assistindo ${currentLesson.title}`
     }
   }, [currentLesson])
   
@@ -33,10 +29,10 @@ export function Player() {
             <Video />
           </div>
           <aside className="absolute top-0 bottom-0 right-0 w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-scroll scrollbar-thin scrollbar-track-zinc-950 scrollbar-thum-zinc-900 divide-y-2 divide-zinc-900">
-            { isCourseLoading ? (
+            { isLoading ? (
               <Fragment>
-                { Array.from({ length: 4 }).map(() => (
-                  <div className="flex w-full items-center gap-3 bg-zinc-800 p-4">
+                { Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex w-full items-center gap-3 bg-zinc-800 p-4">
                     <div className="size-10 rounded-full bg-gradient-to-tr from-zinc-500 to-zinc-700 animate-pulse" />
 
                     <div className="flex flex-1 items-center gap-2 text-left">
@@ -50,7 +46,7 @@ export function Player() {
               </Fragment>
             ) : (
               <Fragment>
-                { modules && modules.map((module, index) => (
+                { course && course.modules && course.modules.map((module, index) => (
                     <Module 
                       key={module.id}
                       moduleIndex={index} 
