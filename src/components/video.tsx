@@ -1,13 +1,25 @@
 import Player from 'react-player'
+import { useDispatch } from 'react-redux'
+import { next, useCurrentLesson } from '../store/slices/player'
 
 export function Video() {
+  const dispatch = useDispatch()
+  
+  const { currentLesson } = useCurrentLesson()
+
+  function handlePlayNext() {
+    dispatch(next())
+  }
+  
   return (
-    <div className="w-full bg-zinc-950">
+    <div className="w-full bg-zinc-950 aspect-video">
       <Player
         width="100%"
-        heigh="100%"
+        height="100%"
         controls
-        url="https://www.youtube.com/watch?v=D9ae7M7KclI&pp=ygUKcm9ja2V0c2VhdA%3D%3D"
+        playing
+        onEnded={handlePlayNext}
+        url={`https://www.youtube.com/watch?v=${currentLesson.id}`}
       />
     </div>
   )
